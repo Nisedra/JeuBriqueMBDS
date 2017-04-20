@@ -48,11 +48,20 @@ function MoteurJeu() {
             let x = Math.random() * width; // Math.random() renvoie un nombre entre 0 et 1
             let y = Math.random() * height;
             let rayon = 8; // rayon entre 2 et 12            
-
+			
+			  let vx = 5; // entre 1 et 5
+            let vy = 9;
+		  
             /*if (B % 2 == 0)
               couleur = "rgb(" + 255 + "," + 0 + "," + 0 + ")";//*/
-            let vx = 5; // entre 1 et 5
-            let vy = 9;
+		  if( score<4 && score>=2){
+			  niveau++;
+			   vx = 11; // entre 1 et 5
+				 vy = 9;
+				 
+		  }
+		  
+            
 
             let b = new Balle(x, y, rayon, "couleur", vx, vy);
             if (b.y < bar.y - 100) {
@@ -63,7 +72,7 @@ function MoteurJeu() {
                 // on décrémente i pour "annuler" ce tour
                 // de boucle
                 i--;
-                console.log('BALLE NON CREER')
+               
             }
         }
     } 
@@ -106,7 +115,7 @@ function MoteurJeu() {
     }
 	
     function gameStart(ctx){
-        displayMessage(ctx, "Niveau " + niveau + " appuyer sur 'espace' pour commencer");
+        displayMessage(ctx, "Niveau:"+niveau+" Appuyer sur 'espace' pour commencer");
         dessinerEtDeplacerLesBalles();
 		dessinerBriques();
 
@@ -114,11 +123,17 @@ function MoteurJeu() {
 
     function update(ctx){
         dessinerEtDeplacerLesBalles();
+		
 		dessinerBriques();
+		
         if (score > 0) {
             message = "Score : " + score;
             displayMessage(ctx, message);
-			
+			if(score==2){
+				
+				 messageA = "Niveau " + 2 + " atteint";
+				displayMessage2(ctx, messageA,300);
+			}
         }
 		testerCollisionBriqueAvecBalles();
         testerCollisionBarAvecBalles();
@@ -128,7 +143,7 @@ function MoteurJeu() {
 
     function gameEnd(ctx){
 		
-        displayMessage(ctx, "Game Over appuyer sur 'espace' pour rejouer");
+        displayMessage(ctx, "Game Over votre score : "+score+ "  et 'espace' pour rejouer");
         dessinerEtDeplacerLesBalles();
 		
     }
@@ -142,7 +157,7 @@ function MoteurJeu() {
 		creerDesBrique(5,5);
 		
         score = 0;
-       
+		niveau = 1;
     }
 
     function testerCollisionBarAvecBalles(){
@@ -166,26 +181,28 @@ function MoteurJeu() {
 
     }
 	
+	
+	
 	 function testerCollisionBriqueAvecBalles(){
 		tableauxDesBrique.forEach(function(br,indexx,tab){
         tableauxDesBalles.forEach(function (b, index,tab) {
 
+			if (circRectsOverlap(br.x, br.y,
+					   br.width, br.height,
+					   b.x, b.y, b.rayon)) {
+					   b.vy = -b.vy;	
 				if (circRectsOverlap(br.x, br.y,
 						   br.width, br.height,
-						   b.x, b.y, b.rayon)) {
-						   b.vy = -b.vy;	
+						   b.x+1, b.y, b.rayon))b.vx = -b.vx;	
+						   					   
 				if (circRectsOverlap(br.x, br.y,
 						   br.width, br.height,
-						   b.x+1, b.y, b.rayon))
-						   b.vx = -b.vx;						   
-				if (circRectsOverlap(br.x, br.y,
-						   br.width, br.height,
-						   b.x-1, b.y, b.rayon))
-						   b.vx = -b.vx;
+						   b.x-1, b.y, b.rayon))b.vx = -b.vx;
+						   
 					console.log("collision balle et brique");
 					tableauxDesBrique.splice(indexx, 1);
-				   
-				}
+				  
+			}
 		
         });
 		});
@@ -203,11 +220,12 @@ function MoteurJeu() {
         });
     }
 	function dessinerBriques(){
-
+		
         tableauxDesBrique.forEach(function (bb, index, tab) {
             bb.draw(ctx);
             
         });
+		
     }
 	
 
@@ -243,6 +261,17 @@ function MoteurJeu() {
 			ctx.fillStyle="white"
 
             ctx.fillText(message, 150, 40);
+            ctx.restore();
+        }
+    }
+	function displayMessage2(ctx, message,x){
+        if (message != null) {
+            let fontSize = 20;
+            ctx.save();
+            ctx.font = fontSize + 'px Courier';
+			ctx.fillStyle="white"
+
+            ctx.fillText(message, x, 40);
             ctx.restore();
         }
     }
