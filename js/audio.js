@@ -7,10 +7,8 @@ var ctx = new audioContext();
 /* decodeAudioData */
 
 const snareDrumURL = '/audio/jeu.mp3';
-const bassDrumURL = '/audio/jeu.mp3';
 
-const bassDrumBt = document.querySelector("#bassDrumBt");
-const snareDrumBt = document.querySelector("#snareDrumBt");
+
 
 function loadSample(url){
           console.log('done');
@@ -54,7 +52,7 @@ function loadSample(url){
 // GROS AVANTAGE : on peut grouper les fonctions asynchrones qui vont
 // charger des fichiers en ajax, et faire des jointures, ICI LA SYNTAXE
 // D'UNE TELLE JOINTURE : 
-const samples = Promise.all([loadSample(bassDrumURL), loadSample(snareDrumURL)])
+const samples = Promise.all([loadSample(snareDrumURL)])
 .then(onSamplesDecoded); // onSamplesDecoded appelé quand les deux fichiers sont
                          // arrivés et ont été décodés
 
@@ -75,11 +73,7 @@ function playSample(buffer){
 }
 
 function onSamplesDecoded(buffers){
-    bassDrumBt.onclick = (evt) => {
+        
         playSample(buffers[0]);
-    };
-  
-    snareDrumBt.onclick = (evt) => {
-        playSample(buffers[1]);
-    };
+    
 }
